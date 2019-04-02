@@ -8,11 +8,18 @@ const handlebars = require('express-handlebars');
 const ENV = process.env.NODE_ENV || 'development';
 const config = require('../knexfile');
 const db = knex(config[ENV]);
-
+const passport = require('passport');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const flash = require('connect-flash');
 // Initialize Express.
 const app = express();
+app.use(flash());
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use(passport.initialize());
+app.use(session({secret: 'our secret string'}));
+app.use(cookieParser());
+app.use(passport.initialize()); // <-- Register the Passport middleware.
 
 // Configure handlebars templates.
 app.engine('handlebars', handlebars({
